@@ -4,11 +4,11 @@ using System.Collections;
 public class tile : MonoBehaviour {
 
     public bool on = false;
-    public Material onCol;
+    private Material onCol;
     public Material offCol;
 
     void Start() {
-        GetComponent<Renderer>().material = offCol;
+        GetComponent<Renderer>().material = offCol;        
     }
 
     void OnCollisionEnter(Collision other)
@@ -16,6 +16,7 @@ public class tile : MonoBehaviour {
         // player0, player1, player2, etc...
         if (other.collider.tag == ("Player")) {
             on = true;
+            onCol = other.gameObject.GetComponent<player>().teamMaterial;
             GetComponent<Renderer>().material = onCol;
         }
     }
