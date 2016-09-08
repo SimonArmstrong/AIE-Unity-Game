@@ -4,58 +4,58 @@ using System.Collections.Generic;
 
 public class player : MonoBehaviour {
 
-    public bool AUTOJUMP;
+	public Material teamMaterial;
 
-    public Material teamMaterial;
-
-    public float speed;
-    public float jumpForce = 1.5f;
-    public bool grounded = false;
+	public float stepDelay;
+	public float transitionSpeed;
+	public bool PauseStepping = false;
+    private float stepTimer = 1.5f;
+    private bool grounded = false;
     private Rigidbody r;
     private float jumpTimer = 1.5f;
-    public Vector3 direction;
+	public Vector3 direction;
+	private Vector3 newLocation;
+	private int currentSong = 0;
 
     // Use this for initialization
     void Start () {
         r = GetComponent<Rigidbody>();
-        jumpTimer = speed;
+		jumpTimer = stepDelay;
     }
+
+	private void MovementInput() {
+		if(Mathf.Abs(Input.GetAxisRaw("Horizontal")) >= 0.1f) {
+			direction = new Vector3((int)Input.GetAxisRaw("Horizontal"), 0, 0);
+			newLocation = transform.position + direction;
+		}
+		if (Mathf.Abs (Input.GetAxisRaw ("Vertical")) >= 0.1f) {
+			direction = new Vector3(0, 0, (int)Input.GetAxisRaw("Vertical"));
+			newLocation = transform.position + direction;
+		}
+	}
 
     // Update is called once per frame
-    void FixedUpdate() {
-
-        if (Input.GetButtonDown("Horizontal")) {
-            direction = new Vector3((int)Input.GetAxisRaw("Horizontal"), 0, 0);
-        }
-        if (Input.GetButtonDown("Vertical"))
-        {
-            direction = new Vector3(0, 0, (int)Input.GetAxisRaw("Vertical"));
-        }
-
+    void Update() {
+		MovementInput ();
+		//Checks if we are falling; sets grounded to true if we're not falling
         if (Mathf.Abs(r.velocity.y) <= 0.005f) grounded = true; else { grounded = false; }
-        if (Input.GetButtonDown("Jump") || AUTOJUMP)
-        {
-            if (grounded)
-            {
-                if (jumpTimer <= 0f)
-                {
-                    jumpTimer = speed;
-                    transform.Translate(direction);
+        if (!PauseStepping) {
+            if (grounded) {
+				//When the step timer is up
+				if (stepTimer <= 0f) {
+					// Reset stepTimer length
+					stepTimer = stepDelay;
+					// Sets the new point in which we want to move to...
+
                 }
+				if (Map.GetTileFromPosition (newLocation) == null) {
+					// Moves the player to newLocation. Applies x10 scaling to transition speed for simpler tweaking
+					transform.position = Vector3.Lerp (transform.position, newLocation, (transitionSpeed * 10) * Time.deltaTime);
+				}
             }
         }
-        if (jumpTimer >= 0f) jumpTimer -= Time.deltaTime;
-
-        /*
-        //Check if we are falling or not; sets our grounded to true if we aren't
-
-        if (!grounded) {
-            Vector3 movement = new Vector3(1, 0, 0);
-            transform.Translate(movement * Time.deltaTime);
-        }
-
-        // Timer for jumping. -- Defines how long before the player's character hops
-        // If we've been grounded for [jumpTimer] seconds
-        */
-    }
+		Debug.DrawLine (transform.position, newLocation);
+		// Begin stepTimer countdown
+		if (stepTimer >= 0f) stepTimer -= Time.deltaTime;
+	}
 }

@@ -12,7 +12,7 @@ public class follow : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.LookAt(ToFollow.transform);
+		transform.LookAt (ToFollow.transform);
 
         //Draw ray to player
         Ray ray = new Ray(idlePoint.transform.position, ToFollow.transform.position);

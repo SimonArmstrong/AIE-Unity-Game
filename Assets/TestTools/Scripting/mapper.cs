@@ -9,7 +9,7 @@ public class mapper : MonoBehaviour {
         {
             for (int j = 0; j < 2; j++)
             {
-                Instantiate(chunk, new Vector3(i * chunk.GetComponent<Tiler>().texRect.width, 0, j * chunk.GetComponent<Tiler>().texRect.height), Quaternion.identity);
+				Instantiate(chunk, new Vector3(i * chunk.GetComponent<Map>().texRect.width, 0, j * chunk.GetComponent<Map>().texRect.height), Quaternion.identity);
             }
         }
     }

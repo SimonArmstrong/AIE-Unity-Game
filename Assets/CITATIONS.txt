@@ -1,0 +1,4 @@
+MUSIC {
+	FREESFX: "http://www.freesfx.co.uk"
+	NCS: "licensing@nocopyrightsounds.co.uk" ('contact for licensing agreement')
+}
