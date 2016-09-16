@@ -12,14 +12,16 @@ public class Map : MonoBehaviour {
 	[HideInInspector]
 	public static List<GameObject> tiles = new List<GameObject>();
     public int seed;
+    public int height;
 
-	public static GameObject GetTileFromPosition(Vector3 position) {
+	public static Vector3 GetTileFromPosition(Vector3 position) {
 		for (int i = 0; i < tiles.Count; i++) {
-			if (tiles [i].transform.position == position) {
-				return tiles[i];
+			if (tiles[i].transform.position.x > position.x && tiles[i].transform.position.x < position.x &&
+                tiles[i].transform.position.z > position.z && tiles[i].transform.position.z < position.z) {
+				return tiles[i].transform.position;
 			}
 		}
-		return null;
+		return new Vector3(0, position.y, 0);
     }
 
     [Serializable]
@@ -57,7 +59,7 @@ public class Map : MonoBehaviour {
                 sample2 = Mathf.PerlinNoise(xCoord / 4, yCoord / 4) * 40;
                 sample3 = Mathf.PerlinNoise(xCoord / 10, yCoord / 10) * 40;
                 sample += sample2 + sample3;
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < height; i++) {
 					
                     tiles.Add(Instantiate(tile, new Vector3(transform.position.x + 1 * x, i - (int)sample, transform.position.z + 1 * y), Quaternion.identity) as GameObject);
                 }

@@ -1,10 +1,15 @@
-﻿using UnityEngine;
+﻿// AUTHOR : Simon Armstrong
+// DATED  : 9/16/2016
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class player : MonoBehaviour {
 
 	public Material teamMaterial;
+
+    public bool LERP = false;
 
 	public float stepDelay;
 	public float transitionSpeed;
@@ -23,9 +28,10 @@ public class player : MonoBehaviour {
     void Start () {
         r = GetComponent<Rigidbody>();
 		jumpTimer = stepDelay;
-        playerNumber = Manager.players.Count;
         Manager.players.Add(this);
+        playerNumber = Manager.players.Count;
         playerSettings = Manager.playerSettings[playerNumber];
+        direction = new Vector3(1, 0, 0);
     }
 
     public void LoadPlayerSettings() {
@@ -44,7 +50,7 @@ public class player : MonoBehaviour {
             AnimationTriggerManager.OnDirectionChange(direction);
         }
 	}
-    //Returns the top most point of the map
+    // Returns the top most point of the map surface
     private Vector3 GetTopSurface() {
         RaycastHit hit;
         Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + 10, transform.position.z), Vector3.down);
@@ -58,7 +64,20 @@ public class player : MonoBehaviour {
     }
 
     private void UnifyPosition() {
-        
+        float modPositionX = transform.position.x % 1;
+        float modPositionY = transform.position.z % 1;
+        float x = transform.position.x, y = transform.position.z;
+        // If our position is not on the exact unit
+        if (modPositionX != 0.0f || modPositionY != 0.0f) {
+            if (modPositionX >= 0.5f) x += (1 - modPositionX);
+            if (modPositionY >= 0.5f) y += (1 - modPositionY);
+            if (modPositionX <  0.5f) x -= modPositionX;
+            if (modPositionY <  0.5f) y -= modPositionY;
+        }
+        Mathf.Round(x);
+        Mathf.Round(y);
+        if (LERP) transform.position = Vector3.Lerp(transform.position, newLocation, (transitionSpeed * 10) * Time.deltaTime);
+        else transform.position = newLocation;
     }
 
     // Update is called once per frame
@@ -81,12 +100,12 @@ public class player : MonoBehaviour {
 				//if (Map.GetTileFromPosition (newLocation) == null)
                 {
                     // Moves the player to newLocation. Applies x10 scaling to transition speed for simpler tweaking
-                    transform.position = Vector3.Lerp (transform.position, newLocation, (transitionSpeed * 10) * Time.deltaTime);
+                    UnifyPosition();
                     //transform.position = new Vector3();
-
                 }
             } else { AnimationTriggerManager.OnFall(); }
         }
+        if(grounded) UnifyPosition();
 		Debug.DrawLine (transform.position, newLocation);
         Debug.DrawLine(GetTopSurface(), transform.position, Color.red);
         // Begin stepTimer countdown
