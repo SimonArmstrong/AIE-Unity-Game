@@ -31,12 +31,12 @@ public class Map : MonoBehaviour {
     public GameObject tile;
     public Table table;
 
-    private void PlaceTiles()
+    public void PlaceTiles()
     {
         //seed = UnityEngine.Random.Range(0, 65534);
         if (tiles.Count > 0) {
             for (int i = 0; i < tiles.Count; i++) {
-                Destroy(tiles[i]);
+                DestroyImmediate(tiles[i]);
             }
             tiles.Clear();
         }
@@ -57,7 +57,7 @@ public class Map : MonoBehaviour {
                 sample2 = Mathf.PerlinNoise(xCoord / 4, yCoord / 4) * 40;
                 sample3 = Mathf.PerlinNoise(xCoord / 10, yCoord / 10) * 40;
                 sample += sample2 + sample3;
-                for (int i = 0; i < 16; i++) {
+                for (int i = 0; i < 3; i++) {
 					
                     tiles.Add(Instantiate(tile, new Vector3(transform.position.x + 1 * x, i - (int)sample, transform.position.z + 1 * y), Quaternion.identity) as GameObject);
                 }
@@ -67,7 +67,7 @@ public class Map : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        PlaceTiles();
+        //PlaceTiles();
     }
 	
 	// Update is called once per frame

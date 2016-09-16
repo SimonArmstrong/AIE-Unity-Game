@@ -88,6 +88,7 @@
     <Compile Include="Assets\TestTools\Scripting\MainMenuManager.cs" />
     <Compile Include="Assets\TestTools\Scripting\Manager.cs" />
     <Compile Include="Assets\TestTools\Scripting\Map.cs" />
+    <Compile Include="Assets\TestTools\Scripting\MapEditor.cs" />
     <Compile Include="Assets\TestTools\Scripting\PerlinNoiseGeneration.cs" />
     <Compile Include="Assets\TestTools\Scripting\follow.cs" />
     <Compile Include="Assets\TestTools\Scripting\mapper.cs" />

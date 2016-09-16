@@ -44,16 +44,21 @@ public class player : MonoBehaviour {
             AnimationTriggerManager.OnDirectionChange(direction);
         }
 	}
-
-    private GameObject GetTopSurface() {
-        RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(new Ray(transform.position, Vector3.down * 100), out hit)) {
-            if(hit.collider.tag == "tile")
-            {
-                return hit.collider.gameObject;
+    //Returns the top most point of the map
+    private Vector3 GetTopSurface() {
+        RaycastHit hit;
+        Ray ray = new Ray(new Vector3(transform.position.x, transform.position.y + 10, transform.position.z), Vector3.down);
+        if (Physics.Raycast(ray, out hit, 10))
+        {
+            if(hit.collider.tag == "tile") {
+                return hit.point;
             }
         }
-        return new GameObject();
+        return Vector3.zero;
+    }
+
+    private void UnifyPosition() {
+        
     }
 
     // Update is called once per frame
@@ -83,7 +88,8 @@ public class player : MonoBehaviour {
             } else { AnimationTriggerManager.OnFall(); }
         }
 		Debug.DrawLine (transform.position, newLocation);
-		// Begin stepTimer countdown
-		if (stepTimer >= 0f) stepTimer -= Time.deltaTime;
+        Debug.DrawLine(GetTopSurface(), transform.position, Color.red);
+        // Begin stepTimer countdown
+        if (stepTimer >= 0f) stepTimer -= Time.deltaTime;
 	}
 }
